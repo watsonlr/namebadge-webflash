@@ -1,24 +1,64 @@
+
 const manifestUrl = 'https://raw.githubusercontent.com/watsonlr/namebadge-apps/main/bootloader_downloads/loader_manifest.json';
-let bootloaderInfo = null;
+let bootloaderList = [];
 let bootloaderBinary = null;
 
 const statusDiv = document.getElementById('status');
-const connectBtn = document.getElementById('connectBtn');
+const bootloaderSelect = document.getElementById('bootloaderSelect');
+const flashBtn = document.getElementById('flashBtn');
+
+function isSupportedBrowser() {
+  const ua = navigator.userAgent;
+  // Chromium-based: Chrome, Edge, Chromium
+  if (ua.includes('Edg/')) return true; // Edge
+  if (ua.includes('Chrome/') && !ua.includes('OPR/') && !ua.includes('Brave/')) return true; // Chrome/Chromium
+  if (ua.includes('Chromium/')) return true;
+  return false;
+}
+
+function showBrowserStatus() {
+  if (isSupportedBrowser()) {
+    statusDiv.textContent = 'Good -- Your Browser can be used to flash your board.';
+    bootloaderSelect.disabled = false;
+    flashBtn.disabled = false;
+    fetchManifest();
+  } else {
+    statusDiv.textContent = 'This flasher only works when run on one of the following browsers: Edge, Chrome, Chromium.';
+    bootloaderSelect.disabled = true;
+    flashBtn.disabled = true;
+  }
+}
 
 async function fetchManifest() {
   statusDiv.textContent = 'Fetching manifest...';
   try {
     const resp = await fetch(manifestUrl);
     if (!resp.ok) throw new Error('Failed to fetch manifest');
-    const manifest = await resp.json();
-    // Pick the first entry for now
-    bootloaderInfo = manifest[0];
-    statusDiv.textContent = `Found bootloader: version ${bootloaderInfo.loader_version}, url: ${bootloaderInfo.url}`;
-    await fetchBootloaderBinary(bootloaderInfo.url);
-    connectBtn.disabled = false;
+    let manifest = await resp.json();
+    // Reverse order: latest first
+    manifest = manifest.slice().reverse();
+    bootloaderList = manifest;
+    populateBootloaderDropdown();
+    bootloaderSelect.disabled = false;
+    flashBtn.disabled = false;
+    // Preload the latest
+    await fetchBootloaderBinary(bootloaderList[0].binary_url);
   } catch (e) {
     statusDiv.textContent = 'Error fetching manifest: ' + e;
+    bootloaderSelect.disabled = true;
+    flashBtn.disabled = true;
   }
+}
+
+function populateBootloaderDropdown() {
+  bootloaderSelect.innerHTML = '';
+  bootloaderList.forEach((entry, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = `v${entry.loader_version} (HW v${entry.hw_version}) - ${entry.binary_url.split('/').pop()}`;
+    if (idx === 0) opt.selected = true; // highlight most recent
+    bootloaderSelect.appendChild(opt);
+  });
 }
 
 async function fetchBootloaderBinary(url) {
@@ -30,10 +70,17 @@ async function fetchBootloaderBinary(url) {
     statusDiv.textContent = `Bootloader ready (${bootloaderBinary.byteLength} bytes)`;
   } catch (e) {
     statusDiv.textContent = 'Error downloading bootloader: ' + e;
+    bootloaderBinary = null;
   }
 }
 
-connectBtn.addEventListener('click', async () => {
+bootloaderSelect.addEventListener('change', async (e) => {
+  const idx = parseInt(bootloaderSelect.value, 10);
+  const entry = bootloaderList[idx];
+  await fetchBootloaderBinary(entry.binary_url);
+});
+
+flashBtn.addEventListener('click', async () => {
   if (!bootloaderBinary) {
     statusDiv.textContent = 'Bootloader not loaded.';
     return;
@@ -56,4 +103,4 @@ connectBtn.addEventListener('click', async () => {
   }
 });
 
-fetchManifest();
+showBrowserStatus();

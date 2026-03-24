@@ -3,17 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Namebadge Web Flash</title>
+  <title>Namebadge Bootloader Flash Site</title>
   <style>
-    body { font-family: sans-serif; margin: 2em; }
-    #status { margin: 1em 0; color: #333; }
-    button { font-size: 1em; padding: 0.5em 1em; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      background: #f7f9fa;
+      color: #222;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 1.5em 2em 1em 2em;
+      margin-bottom: 2em;
+      box-shadow: 0 2px 8px 0 #0001;
+    }
+    .header img {
+      height: 48px;
+      margin-right: 1.5em;
+    }
+    .container {
+      max-width: 480px;
+      margin: 2em auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px 0 #0002;
+      padding: 2em 2.5em 2.5em 2.5em;
+    }
+    h1 {
+      font-size: 1.7em;
+      margin: 0 0 0.5em 0;
+      font-weight: 600;
+    }
+    #status {
+      margin: 1em 0 1.5em 0;
+      color: #333;
+      font-size: 1.05em;
+    }
+    label {
+      font-weight: 500;
+      margin-right: 0.5em;
+    }
+    select, button {
+      font-size: 1em;
+      padding: 0.5em 1em;
+      margin-right: 0.5em;
+      border-radius: 5px;
+      border: 1px solid #bbb;
+      background: #f8fafc;
+      transition: border 0.2s;
+    }
+    button {
+      background: #0b4d92;
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 1px 4px 0 #0001;
+    }
+    button:disabled {
+      background: #b0b8c0;
+      cursor: not-allowed;
+    }
+    .footer {
+      text-align: center;
+      color: #888;
+      font-size: 0.95em;
+      margin-top: 3em;
+    }
   </style>
 </head>
 <body>
-  <h1>Namebadge Web Flash</h1>
-  <div id="status">Loading manifest...</div>
-  <button id="connectBtn" disabled>Connect to ESP32</button>
+  <div class="header">
+    <img src="byui-cstem-logo.png" alt="BYU-Idaho CSTEM logo" />
+    <div>
+      <h1>Namebadge Web Flash</h1>
+      <div style="font-size:1.1em; color:#0b4d92; font-weight:500;">Department of Computer Science &amp; Engineering</div>
+    </div>
+  </div>
+  <div class="container">
+    <h2 style="margin-top:0">How to Flash Your Namebadge</h2>
+    <div style="background:#eaf3ff;border-left:4px solid #0b4d92;padding:0.7em 1em 0.7em 1.2em;margin-bottom:1.2em;font-size:1.08em;">
+      <b>Note:</b> This flasher only works when run on one of the following browsers: <b>Edge, Chrome, Chromium</b>.
+    </div>
+    <ol style="margin-bottom:1.5em;">
+      <li>Connect your badge to your computer using a USB-C cable (see below).</li>
+      <li>Hold the <b>BOOT</b> button, then press and release the <b>RESET</b> button.</li>
+      <li>Release the <b>BOOT</b> button after a second.</li>
+      <li>Select the desired bootloader version below and click <b>Flash Version</b>.</li>
+      <li>Follow on-screen instructions. (Use a Chromium-based browser.)</li>
+    </ol>
+    <img src="namebadge-board-buttons.png" alt="Namebadge board with BOOT and RESET buttons indicated" style="width:100%;max-width:600px;display:block;margin:0 auto 1.5em auto;border-radius:8px;box-shadow:0 2px 8px #0002;">
+    <div id="status">Loading manifest...</div>
+    <label for="bootloaderSelect">Bootloader Version:</label>
+    <select id="bootloaderSelect" disabled></select>
+    <button id="flashBtn" disabled>Flash Version</button>
+  </div>
+  <div class="footer">
+    &copy; 2026 BYU-Idaho CSTEM. For classroom and educational use.
+  </div>
   <script src="webflash.js"></script>
 </body>
 </html>
