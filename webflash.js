@@ -17,9 +17,11 @@ function isSupportedBrowser() {
   // Must have Web Serial API
   if (!('serial' in navigator)) return false;
   const ua = navigator.userAgent;
+  // Detect Brave using navigator.brave if available
+  if (navigator.brave && typeof navigator.brave.isBrave === 'function') return false;
   // Exclude known unsupported browsers
-  if (ua.includes('Firefox') || ua.includes('Safari') || ua.includes('OPR/') || ua.includes('Opera') || ua.includes('Brave/')) return false;
-  // Accept Edge, Chrome, Chromium
+  if (ua.includes('Firefox') || ua.includes('Safari') || ua.includes('OPR/') || ua.includes('Opera')) return false;
+  // Accept Edge, Chrome, Chromium (Edge must be checked before Chrome)
   if (ua.includes('Edg/')) return true; // Edge
   if (ua.includes('Chrome/')) return true; // Chrome/Chromium
   if (ua.includes('Chromium/')) return true;
@@ -29,9 +31,9 @@ function isSupportedBrowser() {
 
 function getBrowserName() {
   const ua = navigator.userAgent;
+  if (navigator.brave && typeof navigator.brave.isBrave === 'function') return 'Brave';
   if (ua.includes('Edg/')) return 'Microsoft Edge';
   if (ua.includes('OPR/') || ua.includes('Opera')) return 'Opera';
-  if (ua.includes('Brave/')) return 'Brave';
   if (ua.includes('Chrome/')) return 'Google Chrome';
   if (ua.includes('Chromium/')) return 'Chromium';
   if (ua.includes('Firefox/')) return 'Mozilla Firefox';
@@ -40,10 +42,11 @@ function getBrowserName() {
 }
 
 function showBrowserStatus() {
+  const browserName = getBrowserName();
   if (isSupportedBrowser()) {
     mainContent.style.display = '';
     unsupportedMsg.style.display = 'none';
-    statusDiv.textContent = 'Good -- Your Browser can be used to flash your board.';
+    statusDiv.textContent = `Good -- Your Browser (${browserName}) can be used to flash your board.`;
     flashControls.style.display = '';
     bootloaderSelect.disabled = false;
     flashBtn.disabled = false;
@@ -52,7 +55,7 @@ function showBrowserStatus() {
     mainContent.style.display = 'none';
     unsupportedMsg.style.display = '';
     if (browserNameMsg) {
-      browserNameMsg.innerHTML = `This browser (<b>${getBrowserName()}</b>) is not supported for flashing your Namebadge.`;
+      browserNameMsg.innerHTML = `This browser (<b>${browserName}</b>) is not supported for flashing your Namebadge.`;
     }
   }
 }
