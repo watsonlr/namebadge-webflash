@@ -98,7 +98,11 @@ async function fetchProgramManifest() {
     const resp = await fetch(programManifestUrl);
     if (!resp.ok) throw new Error('Failed to fetch program manifest');
     let manifest = await resp.json();
-    programList = manifest;
+    if (manifest && Array.isArray(manifest.apps)) {
+      programList = manifest.apps;
+    } else {
+      programList = [];
+    }
     populateProgramDropdown();
     programSelect.disabled = false;
     programFlashBtn.disabled = false;
