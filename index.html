@@ -76,35 +76,43 @@
   </style>
 </head>
 <body>
-  <div class="header">
-    <img src="byui-cstem-logo.png" alt="BYU-Idaho CSTEM logo" />
-    <div>
-      <h1>Namebadge Web Flash</h1>
-      <div style="font-size:1.1em; color:#0b4d92; font-weight:500;">Department of Computer Science &amp; Engineering</div>
+  <div id="mainContent">
+    <div class="header">
+      <img src="byui-cstem-logo.png" alt="BYU-Idaho CSTEM logo" />
+      <div>
+        <h1>Namebadge Web Flash</h1>
+        <div style="font-size:1.1em; color:#0b4d92; font-weight:500;">Department of Computer Science &amp; Engineering</div>
+      </div>
+    </div>
+    <div class="container">
+      <h2 style="margin-top:0">How to Flash Your Namebadge</h2>
+      <div style="background:#eaf3ff;border-left:4px solid #0b4d92;padding:0.7em 1em 0.7em 1.2em;margin-bottom:1.2em;font-size:1.08em;">
+        <b>Note:</b> This flasher only works when run on one of the following browsers: <b>Edge, Chrome, Chromium</b>.
+      </div>
+      <ol style="margin-bottom:1.5em;">
+        <li>Connect your badge to your computer using a USB-C cable (see below).</li>
+        <li>Hold the <b>BOOT</b> button, then press and release the <b>RESET</b> button.</li>
+        <li>Release the <b>BOOT</b> button after a second.</li>
+        <li>Select the desired bootloader version below and click <b>Flash Version</b>.</li>
+        <li>Follow on-screen instructions. (Use a Chromium-based browser.)</li>
+      </ol>
+      <img src="namebadge-board-buttons.png" alt="Namebadge board with BOOT and RESET buttons indicated" style="width:100%;max-width:600px;display:block;margin:0 auto 1.5em auto;border-radius:8px;box-shadow:0 2px 8px #0002;">
+      <div id="status">Loading manifest...</div>
+      <div id="flashControls">
+        <label for="bootloaderSelect">Bootloader Version:</label>
+        <select id="bootloaderSelect" disabled></select>
+        <button id="flashBtn" disabled>Flash Version</button>
+      </div>
+    </div>
+    <div class="footer">
+      &copy; 2026 BYU-Idaho CSTEM. For classroom and educational use.
     </div>
   </div>
-  <div class="container">
-    <h2 style="margin-top:0">How to Flash Your Namebadge</h2>
-    <div style="background:#eaf3ff;border-left:4px solid #0b4d92;padding:0.7em 1em 0.7em 1.2em;margin-bottom:1.2em;font-size:1.08em;">
-      <b>Note:</b> This flasher only works when run on one of the following browsers: <b>Edge, Chrome, Chromium</b>.
-    </div>
-    <ol style="margin-bottom:1.5em;">
-      <li>Connect your badge to your computer using a USB-C cable (see below).</li>
-      <li>Hold the <b>BOOT</b> button, then press and release the <b>RESET</b> button.</li>
-      <li>Release the <b>BOOT</b> button after a second.</li>
-      <li>Select the desired bootloader version below and click <b>Flash Version</b>.</li>
-      <li>Follow on-screen instructions. (Use a Chromium-based browser.)</li>
-    </ol>
-    <img src="namebadge-board-buttons.png" alt="Namebadge board with BOOT and RESET buttons indicated" style="width:100%;max-width:600px;display:block;margin:0 auto 1.5em auto;border-radius:8px;box-shadow:0 2px 8px #0002;">
-    <div id="status">Loading manifest...</div>
-    <div id="flashControls">
-      <label for="bootloaderSelect">Bootloader Version:</label>
-      <select id="bootloaderSelect" disabled></select>
-      <button id="flashBtn" disabled>Flash Version</button>
-    </div>
-  </div>
-  <div class="footer">
-    &copy; 2026 BYU-Idaho CSTEM. For classroom and educational use.
+  <div id="unsupportedMsg" style="display:none;max-width:520px;margin:4em auto 0 auto;padding:2em 2.5em;background:#fff3f3;border:2px solid #e44;box-shadow:0 2px 16px #0002;border-radius:12px;text-align:center;font-size:1.2em;color:#a00;">
+    <b>This browser is not supported for flashing your Namebadge.</b><br><br>
+    Please use one of the following browsers:<br>
+    <b>Edge, Chrome, or Chromium</b> (desktop version, not mobile).<br><br>
+    <span style="font-size:0.95em;color:#444;">(Firefox, Safari, Brave, and Opera are not supported due to missing Web Serial API support.)</span>
   </div>
   <script src="webflash.js"></script>
 </body>

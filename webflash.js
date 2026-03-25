@@ -8,6 +8,8 @@ const statusDiv = document.getElementById('status');
 const bootloaderSelect = document.getElementById('bootloaderSelect');
 const flashBtn = document.getElementById('flashBtn');
 const flashControls = document.getElementById('flashControls');
+const mainContent = document.getElementById('mainContent');
+const unsupportedMsg = document.getElementById('unsupportedMsg');
 
 
 function isSupportedBrowser() {
@@ -26,14 +28,16 @@ function isSupportedBrowser() {
 
 function showBrowserStatus() {
   if (isSupportedBrowser()) {
+    mainContent.style.display = '';
+    unsupportedMsg.style.display = 'none';
     statusDiv.textContent = 'Good -- Your Browser can be used to flash your board.';
     flashControls.style.display = '';
     bootloaderSelect.disabled = false;
     flashBtn.disabled = false;
     fetchManifest();
   } else {
-    statusDiv.textContent = 'This flasher only works when run on one of the following browsers: Edge, Chrome, Chromium.';
-    flashControls.style.display = 'none';
+    mainContent.style.display = 'none';
+    unsupportedMsg.style.display = '';
   }
 }
 
