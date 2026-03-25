@@ -103,9 +103,11 @@ async function fetchManifest() {
     // Preload the latest
     await fetchBootloaderBinary(bootloaderList[0].binary_url);
   } catch (e) {
+    console.log('[DEBUG] Error in fetchManifest:', e);
     statusDiv.textContent = 'Error fetching manifest: ' + e;
     bootloaderSelect.disabled = true;
     flashBtn.disabled = true;
+    // Do NOT hide mainContent or show unsupportedMsg here!
   }
 }
 
