@@ -5,15 +5,20 @@ if (window.__NB_WEBFLASH_LOADED__) {
 }
 window.__NB_WEBFLASH_LOADED__ = true;
 
+
 const manifestUrl = 'https://raw.githubusercontent.com/watsonlr/namebadge-apps/main/bootloader_downloads/loader_manifest.json';
+const programManifestUrl = 'https://raw.githubusercontent.com/watsonlr/namebadge-apps/main/manifest.json';
 let bootloaderList = [];
 let bootloaderBinary = null;
+let programList = [];
+let programBinary = null;
 
 
 const statusDiv = document.getElementById('status');
 const bootloaderSelect = document.getElementById('bootloaderSelect');
 const flashBtn = document.getElementById('flashBtn');
-const flashControls = document.getElementById('flashControls');
+const programSelect = document.getElementById('programSelect');
+const programFlashBtn = document.getElementById('programFlashBtn');
 const mainContent = document.getElementById('mainContent');
 const unsupportedMsg = document.getElementById('unsupportedMsg');
 const browserNameMsg = document.getElementById('browserNameMsg');
@@ -84,6 +89,82 @@ function getBrowserName() {
   return 'Unknown';
 }
 
+async function fetchProgramManifest() {
+  if (!programSelect) return;
+  programSelect.innerHTML = '<option>Loading...</option>';
+  programSelect.disabled = true;
+  programFlashBtn.disabled = true;
+  try {
+    const resp = await fetch(programManifestUrl);
+    if (!resp.ok) throw new Error('Failed to fetch program manifest');
+    let manifest = await resp.json();
+    programList = manifest;
+    populateProgramDropdown();
+    programSelect.disabled = false;
+    programFlashBtn.disabled = false;
+  } catch (e) {
+    programSelect.innerHTML = '<option>Error loading programs</option>';
+    programSelect.disabled = true;
+    programFlashBtn.disabled = true;
+    console.log('[DEBUG] Error in fetchProgramManifest:', e);
+  }
+}
+
+function populateProgramDropdown() {
+  programSelect.innerHTML = '';
+  programList.forEach((entry, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = entry.name || entry.title || entry.binary_url || `Program ${idx+1}`;
+    if (idx === 0) opt.selected = true;
+    programSelect.appendChild(opt);
+  });
+}
+
+async function fetchProgramBinary(url) {
+  statusDiv.textContent = 'Downloading program binary...';
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('Failed to fetch program binary');
+    programBinary = await resp.arrayBuffer();
+    statusDiv.textContent = `Program ready (${programBinary.byteLength} bytes)`;
+  } catch (e) {
+    statusDiv.textContent = 'Error downloading program: ' + e;
+    programBinary = null;
+  }
+}
+
+programSelect?.addEventListener('change', async (e) => {
+  const idx = parseInt(programSelect.value, 10);
+  const entry = programList[idx];
+  if (entry && entry.binary_url) {
+    await fetchProgramBinary(entry.binary_url);
+  }
+});
+
+programFlashBtn?.addEventListener('click', async () => {
+  if (!programBinary) {
+    statusDiv.textContent = 'Program not loaded.';
+    return;
+  }
+  if (!('serial' in navigator)) {
+    statusDiv.textContent = 'Web Serial API not supported in this browser.';
+    return;
+  }
+  try {
+    statusDiv.textContent = 'Requesting serial port...';
+    const port = await navigator.serial.requestPort();
+    await port.open({ baudRate: 115200 });
+    statusDiv.textContent = 'Serial port opened. (Flashing not implemented yet)';
+    // For now, just print to console
+    console.log('Program binary ready to flash:', programBinary);
+    await port.close();
+    statusDiv.textContent = 'Serial port closed.';
+  } catch (e) {
+    statusDiv.textContent = 'Serial error: ' + e;
+  }
+});
+
 function showBrowserStatus() {
   console.log('[DEBUG] showBrowserStatus() called');
   console.trace('[DEBUG] showBrowserStatus stack trace');
@@ -97,6 +178,7 @@ function showBrowserStatus() {
     bootloaderSelect.disabled = false;
     flashBtn.disabled = false;
     fetchManifest();
+    fetchProgramManifest();
   } else {
     console.log('[DEBUG] showBrowserStatus: unsupported browser, showing unsupportedMsg');
     mainContent.style.display = 'none';
