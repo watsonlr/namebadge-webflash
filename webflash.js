@@ -10,6 +10,7 @@ const flashBtn = document.getElementById('flashBtn');
 const flashControls = document.getElementById('flashControls');
 const mainContent = document.getElementById('mainContent');
 const unsupportedMsg = document.getElementById('unsupportedMsg');
+const browserNameMsg = document.getElementById('browserNameMsg');
 
 
 function isSupportedBrowser() {
@@ -26,6 +27,18 @@ function isSupportedBrowser() {
 }
 
 
+function getBrowserName() {
+  const ua = navigator.userAgent;
+  if (ua.includes('Edg/')) return 'Microsoft Edge';
+  if (ua.includes('OPR/') || ua.includes('Opera')) return 'Opera';
+  if (ua.includes('Brave/')) return 'Brave';
+  if (ua.includes('Chrome/')) return 'Google Chrome';
+  if (ua.includes('Chromium/')) return 'Chromium';
+  if (ua.includes('Firefox/')) return 'Mozilla Firefox';
+  if (ua.includes('Safari/')) return 'Safari';
+  return 'Unknown';
+}
+
 function showBrowserStatus() {
   if (isSupportedBrowser()) {
     mainContent.style.display = '';
@@ -38,6 +51,9 @@ function showBrowserStatus() {
   } else {
     mainContent.style.display = 'none';
     unsupportedMsg.style.display = '';
+    if (browserNameMsg) {
+      browserNameMsg.innerHTML = `This browser (<b>${getBrowserName()}</b>) is not supported for flashing your Namebadge.`;
+    }
   }
 }
 
