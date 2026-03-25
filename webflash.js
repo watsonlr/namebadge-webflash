@@ -1,4 +1,10 @@
 
+if (window.__NB_WEBFLASH_LOADED__) {
+  console.log('[DEBUG] webflash.js loaded more than once!');
+  throw new Error('webflash.js loaded more than once!');
+}
+window.__NB_WEBFLASH_LOADED__ = true;
+
 const manifestUrl = 'https://raw.githubusercontent.com/watsonlr/namebadge-apps/main/bootloader_downloads/loader_manifest.json';
 let bootloaderList = [];
 let bootloaderBinary = null;
@@ -71,6 +77,7 @@ function getBrowserName() {
 
 function showBrowserStatus() {
   console.log('[DEBUG] showBrowserStatus() called');
+  console.trace('[DEBUG] showBrowserStatus stack trace');
   const browserName = getBrowserName();
   if (isSupportedBrowser()) {
     console.log('[DEBUG] showBrowserStatus: supported browser, showing mainContent');
