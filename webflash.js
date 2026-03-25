@@ -1,4 +1,3 @@
-
 if (window.__NB_WEBFLASH_LOADED__) {
   console.log('[DEBUG] webflash.js loaded more than once!');
   throw new Error('webflash.js loaded more than once!');
@@ -131,16 +130,19 @@ async function fetchProgramBinary(url) {
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('Failed to fetch program binary');
     programBinary = await resp.arrayBuffer();
-    statusDiv.textContent = `Program ready (${programBinary.byteLength} bytes)`;
+    statusDiv.textContent = `Ready to flash program (${programBinary.byteLength} bytes)`;
+    programFlashBtn.disabled = false;
   } catch (e) {
     statusDiv.textContent = 'Error downloading program: ' + e;
     programBinary = null;
+    programFlashBtn.disabled = true;
   }
 }
 
 programSelect?.addEventListener('change', async (e) => {
   const idx = parseInt(programSelect.value, 10);
   const entry = programList[idx];
+  programFlashBtn.disabled = true;
   if (entry && entry.binary_url) {
     await fetchProgramBinary(entry.binary_url);
   }
@@ -148,7 +150,7 @@ programSelect?.addEventListener('change', async (e) => {
 
 programFlashBtn?.addEventListener('click', async () => {
   if (!programBinary) {
-    statusDiv.textContent = 'Program not loaded.';
+    statusDiv.textContent = 'Program not loaded. Select a program above.';
     return;
   }
   if (!('serial' in navigator)) {
@@ -232,22 +234,25 @@ async function fetchBootloaderBinary(url) {
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('Failed to fetch bootloader binary');
     bootloaderBinary = await resp.arrayBuffer();
-    statusDiv.textContent = `Bootloader ready (${bootloaderBinary.byteLength} bytes)`;
+    statusDiv.textContent = `Ready to flash bootloader (${bootloaderBinary.byteLength} bytes)`;
+    flashBtn.disabled = false;
   } catch (e) {
     statusDiv.textContent = 'Error downloading bootloader: ' + e;
     bootloaderBinary = null;
+    flashBtn.disabled = true;
   }
 }
 
 bootloaderSelect.addEventListener('change', async (e) => {
   const idx = parseInt(bootloaderSelect.value, 10);
   const entry = bootloaderList[idx];
+  flashBtn.disabled = true;
   await fetchBootloaderBinary(entry.binary_url);
 });
 
 flashBtn.addEventListener('click', async () => {
   if (!bootloaderBinary) {
-    statusDiv.textContent = 'Bootloader not loaded.';
+    statusDiv.textContent = 'Bootloader not loaded. Select a version above.';
     return;
   }
   if (!('serial' in navigator)) {
