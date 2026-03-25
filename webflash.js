@@ -32,15 +32,12 @@ function isSupportedBrowser() {
     console.log('[DEBUG] Detected Brave browser.');
     return false;
   }
-  // Exclude known unsupported browsers
+  // Exclude Firefox
   if (ua.includes('Firefox')) {
     console.log('[DEBUG] Detected Firefox.');
     return false;
   }
-  if (ua.includes('Safari')) {
-    console.log('[DEBUG] Detected Safari.');
-    return false;
-  }
+  // Exclude Opera
   if (ua.includes('OPR/') || ua.includes('Opera')) {
     console.log('[DEBUG] Detected Opera.');
     return false;
@@ -57,6 +54,18 @@ function isSupportedBrowser() {
   if (ua.includes('Chromium/')) {
     console.log('[DEBUG] Detected Chromium.');
     return true;
+  }
+  // Exclude Safari ONLY if not Chrome, Edge, Chromium, Opera, or Brave
+  if (
+    ua.includes('Safari') &&
+    !ua.includes('Chrome') &&
+    !ua.includes('Edg') &&
+    !ua.includes('Chromium') &&
+    !ua.includes('OPR') &&
+    !ua.includes('Brave')
+  ) {
+    console.log('[DEBUG] Detected Safari (standalone).');
+    return false;
   }
   console.log('[DEBUG] Browser not recognized as supported.');
   return false;
