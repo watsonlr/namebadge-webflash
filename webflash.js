@@ -178,7 +178,6 @@ function showBrowserStatus() {
     mainContent.style.display = '';
     unsupportedMsg.style.display = 'none';
     statusDiv.textContent = `Good -- Your Browser (${browserName}) can be used to flash your board.`;
-    flashControls.style.display = '';
     bootloaderSelect.disabled = false;
     flashBtn.disabled = false;
     fetchManifest();
