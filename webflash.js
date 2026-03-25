@@ -3,9 +3,11 @@ const manifestUrl = 'https://raw.githubusercontent.com/watsonlr/namebadge-apps/m
 let bootloaderList = [];
 let bootloaderBinary = null;
 
+
 const statusDiv = document.getElementById('status');
 const bootloaderSelect = document.getElementById('bootloaderSelect');
 const flashBtn = document.getElementById('flashBtn');
+const flashControls = document.getElementById('flashControls');
 
 
 function isSupportedBrowser() {
@@ -21,16 +23,17 @@ function isSupportedBrowser() {
   return false;
 }
 
+
 function showBrowserStatus() {
   if (isSupportedBrowser()) {
     statusDiv.textContent = 'Good -- Your Browser can be used to flash your board.';
+    flashControls.style.display = '';
     bootloaderSelect.disabled = false;
     flashBtn.disabled = false;
     fetchManifest();
   } else {
     statusDiv.textContent = 'This flasher only works when run on one of the following browsers: Edge, Chrome, Chromium.';
-    bootloaderSelect.disabled = true;
-    flashBtn.disabled = true;
+    flashControls.style.display = 'none';
   }
 }
 
