@@ -220,7 +220,7 @@ function populateBootloaderDropdown() {
   bootloaderList.forEach((entry, idx) => {
     const opt = document.createElement('option');
     opt.value = idx;
-    opt.textContent = `v${entry.loader_version} (HW v${entry.hw_version}) - ${entry.binary_url.split('/').pop()}`;
+    opt.textContent = `${entry.loader_version}`;
     if (idx === 0) opt.selected = true; // highlight most recent
     bootloaderSelect.appendChild(opt);
   });
