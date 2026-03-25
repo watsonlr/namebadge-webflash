@@ -15,16 +15,44 @@ const browserNameMsg = document.getElementById('browserNameMsg');
 
 function isSupportedBrowser() {
   // Must have Web Serial API
-  if (!('serial' in navigator)) return false;
+  if (!('serial' in navigator)) {
+    console.log('[DEBUG] Web Serial API not found in navigator.');
+    return false;
+  }
   const ua = navigator.userAgent;
+  console.log('[DEBUG] User agent:', ua);
   // Detect Brave using navigator.brave if available
-  if (navigator.brave && typeof navigator.brave.isBrave === 'function') return false;
+  if (navigator.brave && typeof navigator.brave.isBrave === 'function') {
+    console.log('[DEBUG] Detected Brave browser.');
+    return false;
+  }
   // Exclude known unsupported browsers
-  if (ua.includes('Firefox') || ua.includes('Safari') || ua.includes('OPR/') || ua.includes('Opera')) return false;
+  if (ua.includes('Firefox')) {
+    console.log('[DEBUG] Detected Firefox.');
+    return false;
+  }
+  if (ua.includes('Safari')) {
+    console.log('[DEBUG] Detected Safari.');
+    return false;
+  }
+  if (ua.includes('OPR/') || ua.includes('Opera')) {
+    console.log('[DEBUG] Detected Opera.');
+    return false;
+  }
   // Accept Edge, Chrome, Chromium (Edge must be checked before Chrome)
-  if (ua.includes('Edg/')) return true; // Edge
-  if (ua.includes('Chrome/')) return true; // Chrome/Chromium
-  if (ua.includes('Chromium/')) return true;
+  if (ua.includes('Edg/')) {
+    console.log('[DEBUG] Detected Edge.');
+    return true;
+  }
+  if (ua.includes('Chrome/')) {
+    console.log('[DEBUG] Detected Chrome.');
+    return true;
+  }
+  if (ua.includes('Chromium/')) {
+    console.log('[DEBUG] Detected Chromium.');
+    return true;
+  }
+  console.log('[DEBUG] Browser not recognized as supported.');
   return false;
 }
 
