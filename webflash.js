@@ -70,8 +70,10 @@ function getBrowserName() {
 }
 
 function showBrowserStatus() {
+  console.log('[DEBUG] showBrowserStatus() called');
   const browserName = getBrowserName();
   if (isSupportedBrowser()) {
+    console.log('[DEBUG] showBrowserStatus: supported browser, showing mainContent');
     mainContent.style.display = '';
     unsupportedMsg.style.display = 'none';
     statusDiv.textContent = `Good -- Your Browser (${browserName}) can be used to flash your board.`;
@@ -80,6 +82,7 @@ function showBrowserStatus() {
     flashBtn.disabled = false;
     fetchManifest();
   } else {
+    console.log('[DEBUG] showBrowserStatus: unsupported browser, showing unsupportedMsg');
     mainContent.style.display = 'none';
     unsupportedMsg.style.display = '';
     if (browserNameMsg) {
@@ -164,4 +167,5 @@ flashBtn.addEventListener('click', async () => {
   }
 });
 
+console.log('[DEBUG] Global: calling showBrowserStatus()');
 showBrowserStatus();
