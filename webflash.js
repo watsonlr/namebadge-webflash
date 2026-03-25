@@ -7,11 +7,16 @@ const statusDiv = document.getElementById('status');
 const bootloaderSelect = document.getElementById('bootloaderSelect');
 const flashBtn = document.getElementById('flashBtn');
 
+
 function isSupportedBrowser() {
+  // Must have Web Serial API
+  if (!('serial' in navigator)) return false;
   const ua = navigator.userAgent;
-  // Chromium-based: Chrome, Edge, Chromium
+  // Exclude known unsupported browsers
+  if (ua.includes('Firefox') || ua.includes('Safari') || ua.includes('OPR/') || ua.includes('Opera') || ua.includes('Brave/')) return false;
+  // Accept Edge, Chrome, Chromium
   if (ua.includes('Edg/')) return true; // Edge
-  if (ua.includes('Chrome/') && !ua.includes('OPR/') && !ua.includes('Brave/')) return true; // Chrome/Chromium
+  if (ua.includes('Chrome/')) return true; // Chrome/Chromium
   if (ua.includes('Chromium/')) return true;
   return false;
 }
